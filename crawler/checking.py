@@ -13,12 +13,11 @@ def _get_vietnam_time():
 
 
 def _normalize_text(text):
-    text = unicodedata.normalize('NFD', text)
-    text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')
-
-    text = re.sub(r'[^\w\s]', '', text)
-
-    return re.sub(r'\s+', '_', text).strip('_')  
+    text = unicodedata.normalize('NFD', text) 
+    text = re.sub(r'[\u0300-\u036f]', '', text)  
+    text = text.replace('đ', 'd').replace('Đ', 'D')  
+    text = re.sub(r'\s+', '_', text)  
+    return text
 
 def _save_to_csv(data: Dict, city_name: str):
     now = _get_vietnam_time()

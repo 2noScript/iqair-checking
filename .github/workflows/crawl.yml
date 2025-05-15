@@ -32,6 +32,8 @@ jobs:
         run: python crawler/checking.py
       
       - name: Commit and push changes
+        env:
+          TZ: 'Asia/Ho_Chi_Minh'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

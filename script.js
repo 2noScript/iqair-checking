@@ -93,31 +93,32 @@ function updateStatistics(cityData) {
 function createChart(cityData) {
     const ctx = document.getElementById('aqiChart').getContext('2d');
     const timeRange = document.getElementById('timeRange').value;
+    const getColor = getChartColors();
     
     const datasets = Object.entries(cityData).map(([city, data], index) => {
-        const sortedData = data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        
+        const color = getColor(index);
         return {
             label: city.replace(/_/g, ' '),
-            data: sortedData.map(row => ({
-                x: new Date(row.timestamp),
-                y: parseFloat(row.aqi) || 0
-            })),
-            borderColor: getRandomColor(),
-            backgroundColor: getRandomColor(),
+            data: data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                     .map(row => ({
+                         x: new Date(row.timestamp),
+                         y: parseFloat(row.aqi) || 0
+                     })),
+            borderColor: color,
+            backgroundColor: color,
             fill: false,
-            tension: 0.4,
-            pointRadius: 3,
-            borderWidth: 2
+            tension: 0.3,
+            pointRadius: 2,
+            borderWidth: 2.5,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 2
         };
     });
 
-    // Hủy biểu đồ cũ nếu tồn tại
     if (chart) {
         chart.destroy();
     }
 
-    // Tạo biểu đồ mới với cấu hình chi tiết hơn
     chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -135,22 +136,46 @@ function createChart(cityData) {
                     display: true,
                     text: 'Biến động chỉ số AQI theo thời gian',
                     font: {
-                        size: 16,
-                        weight: 'bold'
+                        size: 18,
+                        weight: 'bold',
+                        family: "'Google Sans', sans-serif"
                     },
-                    padding: 20
+                    padding: {
+                        top: 20,
+                        bottom: 20
+                    },
+                    color: '#202124'
                 },
                 legend: {
                     position: 'bottom',
                     labels: {
                         usePointStyle: true,
-                        padding: 15
+                        padding: 20,
+                        font: {
+                            family: "'Google Sans', sans-serif",
+                            size: 12
+                        },
+                        boxWidth: 10,
+                        boxHeight: 10
                     }
                 },
                 tooltip: {
                     enabled: true,
                     mode: 'index',
-                    intersect: false
+                    intersect: false,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#202124',
+                    bodyColor: '#202124',
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 12,
+                    bodyFont: {
+                        family: "'Google Sans', sans-serif"
+                    },
+                    titleFont: {
+                        family: "'Google Sans', sans-serif",
+                        weight: 'bold'
+                    }
                 }
             },
             scales: {
@@ -162,16 +187,28 @@ function createChart(cityData) {
                             hour: 'HH:mm dd/MM'
                         }
                     },
+                    grid: {
+                        display: true,
+                        color: '#f1f3f4',
+                        drawBorder: true,
+                        drawTicks: true
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Google Sans', sans-serif",
+                            size: 11
+                        },
+                        color: '#5f6368'
+                    },
                     title: {
                         display: true,
                         text: 'Thời gian',
                         font: {
-                            weight: 'bold'
-                        }
-                    },
-                    grid: {
-                        display: true,
-                        drawBorder: true
+                            family: "'Google Sans', sans-serif",
+                            weight: 'bold',
+                            size: 13
+                        },
+                        color: '#202124'
                     }
                 },
                 y: {
@@ -179,29 +216,51 @@ function createChart(cityData) {
                         display: true,
                         text: 'Chỉ số AQI',
                         font: {
-                            weight: 'bold'
-                        }
+                            family: "'Google Sans', sans-serif",
+                            weight: 'bold',
+                            size: 13
+                        },
+                        color: '#202124'
                     },
                     grid: {
                         display: true,
+                        color: '#f1f3f4',
                         drawBorder: true
                     },
-                    min: 0,
                     ticks: {
+                        font: {
+                            family: "'Google Sans', sans-serif",
+                            size: 11
+                        },
+                        color: '#5f6368',
                         stepSize: 50
-                    }
+                    },
+                    min: 0
                 }
             }
         }
     });
 }
 
-function getRandomColor() {
+function getChartColors() {
     const colors = [
-        '#1a73e8', '#34a853', '#fbbc04', '#ea4335',
-        '#4285f4', '#0f9d58', '#db4437', '#f4b400'
+        '#1a73e8', // Xanh dương Google
+        '#34a853', // Xanh lá Google
+        '#fbbc04', // Vàng Google
+        '#ea4335', // Đỏ Google
+        '#9334a8', // Tím
+        '#0f9d58', // Xanh lá đậm
+        '#4285f4', // Xanh dương nhạt
+        '#db4437', // Đỏ cam
+        '#673ab7', // Tím đậm
+        '#ff6d00', // Cam
+        '#0097a7', // Xanh ngọc
+        '#f50057'  // Hồng
     ];
-    return colors[Math.floor(Math.random() * colors.length)];
+    
+    return function(index) {
+        return colors[index % colors.length];
+    };
 }
 
 function getAQIClass(aqi) {
