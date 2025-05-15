@@ -2,7 +2,7 @@ let chart = null;
 
 async function getCities() {
     try {
-        const response = await fetch('../../../config/map.yml');
+        const response = await fetch('config/map.yml');
         const yamlText = await response.text();
         const config = jsyaml.load(yamlText);
         return config.cities.map(city => _normalize_text(city.name));
@@ -31,7 +31,7 @@ async function loadCityData() {
     for (const city of cities) {
         try {
             // Truy cập trực tiếp file CSV mới nhất
-            const response = await fetch(`../../../data/${city}/aqi_${city}_2025_may.csv`);
+            const response = await fetch(`data/${city}/aqi_${city}_2025_may.csv`);
             const csvText = await response.text();
             const rows = csvText.split('\n').filter(row => row.trim());
             
