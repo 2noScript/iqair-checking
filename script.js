@@ -27,11 +27,13 @@ async function loadCityData() {
     
     const cities = await getCities();
     const cityData = {};
+    
+    const selectedYear = document.getElementById('yearSelect').value;
+    const selectedMonth = document.getElementById('monthSelect').value;
 
     for (const city of cities) {
         try {
-            // Truy cập trực tiếp file CSV mới nhất
-            const response = await fetch(`data/${city}/aqi_${city}_2025_may.csv`);
+            const response = await fetch(`data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`);
             const csvText = await response.text();
             const rows = csvText.split('\n').filter(row => row.trim());
             
@@ -39,9 +41,10 @@ async function loadCityData() {
                 const headers = rows[0].split(',');
                 cityData[city] = rows.slice(1).map(row => {
                     const data = row.split(',');
+                    console.log(data);
                     const rowData = {};
                     headers.forEach((header, index) => {
-                        rowData[header] = data[index];
+                        rowData[header.replace(/\r/g, '')] = data[index].replace(/\r/g, '');
                     });
                     return rowData;
                 });
@@ -62,6 +65,24 @@ async function loadCityData() {
         console.error('Không thể tải dữ liệu từ bất kỳ thành phố nào');
     }
 }
+
+// Thêm event listener cho các select box
+document.addEventListener('DOMContentLoaded', function() {
+    const yearSelect = document.getElementById('yearSelect');
+    const monthSelect = document.getElementById('monthSelect');
+    
+    // Set giá trị mặc định cho các select box
+    const now = new Date();
+    yearSelect.value = now.getFullYear().toString();
+    monthSelect.value = now.toLocaleString('en', { month: 'short' }).toLowerCase();
+    
+    // Thêm event listener
+    yearSelect.addEventListener('change', loadCityData);
+    monthSelect.addEventListener('change', loadCityData);
+    
+    // Load dữ liệu ban đầu
+    loadCityData();
+});
 
 function updateStatistics(cityData) {
     const allCities = Object.keys(cityData);
@@ -92,7 +113,8 @@ function updateStatistics(cityData) {
 
 function createChart(cityData) {
     const ctx = document.getElementById('aqiChart').getContext('2d');
-    const timeRange = document.getElementById('timeRange').value;
+    const selectedYear = document.getElementById('yearSelect').value;
+    const selectedMonth = document.getElementById('monthSelect').value;
     const getColor = getChartColors();
     
     const datasets = Object.entries(cityData).map(([city, data], index) => {
@@ -134,7 +156,7 @@ function createChart(cityData) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Biến động chỉ số AQI theo thời gian',
+                    text: `Biến động chỉ số AQI - Tháng ${selectedMonth.toUpperCase()} ${selectedYear}`,
                     font: {
                         size: 18,
                         weight: 'bold',
@@ -182,10 +204,12 @@ function createChart(cityData) {
                 x: {
                     type: 'time',
                     time: {
-                        unit: 'hour',
+                        unit: 'day',
                         displayFormats: {
+                            day: 'dd/MM',
                             hour: 'HH:mm dd/MM'
-                        }
+                        },
+                        tooltipFormat: 'dd/MM/yyyy HH:mm'
                     },
                     grid: {
                         display: true,
@@ -293,12 +317,13 @@ function createCityCard(cityData) {
                 ${cityData.humidity}%
             </div>
             <div class="info-item">
-                <strong>Chất ô nhiễm</strong>
+                <strong>ô nhiễm Chính</strong>
                 ${cityData.pollutant}
             </div>
             <div class="info-item">
                 <strong>Nồng độ</strong>
                 ${cityData.concentration}
+                µg/m³
             </div>
         </div>
         <div style="text-align: right; font-size: 0.8em; margin-top: 15px; color: #666;">

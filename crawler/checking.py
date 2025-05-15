@@ -3,7 +3,7 @@ import yaml
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import csv
-from typing import Dict, List, Optional
+from typing import Dict
 import pathlib
 import re
 import unicodedata
