@@ -1,0 +1,3 @@
+timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
+2025-05-15T18:54:22.045596+07:00,Hà Nội,61,12.5,92,pm25,14.6
+2025-05-15T19:17:55.777881+07:00,Hà Nội,66,10,93,pm25,17

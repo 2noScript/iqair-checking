@@ -1,0 +1,17 @@
+name: iqair
+domain: iqair.com
+locale: vi
+api_site: https://website-api.airvisual.com/v1/routes/vietnam/$_CITE_PATH_$
+api_city: https://website-api.airvisual.com/v1/cities/$_CITY_ID_$?units.temperature=celsius&units.distance=kilometer&units.pressure=millibar&units.system=metric&AQI=US&language=vi
+cities:
+  - name: "Hà Nội"  
+    site_path: hanoi/hanoi
+  - name: "Hồ Chí Minh"
+    site_path: ho-chi-minh-city/ho-chi-minh-city
+  - name: "Đà Nẵng"
+    site_path: da-nang/da-nang
+  - name: "Hải Phòng"
+    site_path: thanh-pho-hai-phong/haiphong
+  - name: "Nha Trang"
+    site_path: khanh-hoa/nha-trang
+

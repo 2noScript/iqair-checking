@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chất Lượng Không Khí Việt Nam</title>
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>Chất Lượng Không Khí</h1>
+        </div>
+        <div class="sidebar-content">
+          <div class="filter-section">
+            <select id="timeRange" class="time-filter">
+              <option value="24h">24 giờ qua</option>
+              <option value="7d">7 ngày qua</option>
+              <option value="30d">30 ngày qua</option>
+            </select>
+          </div>
+          <div class="stats-overview">
+            <div class="stat-item">
+              <span class="stat-label">AQI Trung bình</span>
+              <span id="avgAQI" class="stat-value">--</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Tốt nhất</span>
+              <span id="bestCity" class="stat-value">--</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Cần cải thiện</span>
+              <span id="worstCity" class="stat-value">--</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="chart-section">
+          <canvas id="aqiChart"></canvas>
+        </div>
+        <div class="cities-grid" id="citiesGrid">
+          <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+        </div>
+      </main>
+    </div>
+    <script src="../static/js/script.js"></script>
+  </body>
+</html>
