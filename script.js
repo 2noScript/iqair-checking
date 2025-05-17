@@ -117,52 +117,66 @@ function createBarChart(cityData) {
   return barChart;
 }
 
-// Sửa lại hàm loadCityData để thêm biểu đồ cột
+function showLoading() {
+    document.getElementById('loading').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loading').classList.remove('active');
+}
+
 async function loadCityData() {
-  const citiesGrid = document.getElementById("citiesGrid");
-  citiesGrid.innerHTML = "";
-
-  const cities = await getCities();
-  const cityData = {};
-
-  const selectedYear = document.getElementById("yearSelect").value;
-  const selectedMonth = document.getElementById("monthSelect").value;
-
-  for (const city of cities) {
+    showLoading();
     try {
-      const response = await fetch(
-        `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
-      );
-      const csvText = await response.text();
-      const rows = csvText.split("\n").filter((row) => row.trim());
+        const citiesGrid = document.getElementById("citiesGrid");
+        citiesGrid.innerHTML = "";
 
-      if (rows.length >= 2) {
-        const headers = rows[0].split(",");
-        cityData[city] = rows.slice(1).map((row) => {
-          const data = row.split(",");
-          const rowData = {};
-          headers.forEach((header, index) => {
-            rowData[header.replace(/\r/g, "")] = data[index].replace(/\r/g, "");
-          });
-          return rowData;
-        });
+        const cities = await getCities();
+        const cityData = {};
 
-        const latestData = cityData[city][cityData[city].length - 1];
-        const card = createCityCard(latestData);
-        citiesGrid.appendChild(card);
-      }
+        const selectedYear = document.getElementById("yearSelect").value;
+        const selectedMonth = document.getElementById("monthSelect").value;
+
+        for (const city of cities) {
+            try {
+                const response = await fetch(
+                    `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
+                );
+                const csvText = await response.text();
+                const rows = csvText.split("\n").filter((row) => row.trim());
+
+                if (rows.length >= 2) {
+                    const headers = rows[0].split(",");
+                    cityData[city] = rows.slice(1).map((row) => {
+                        const data = row.split(",");
+                        const rowData = {};
+                        headers.forEach((header, index) => {
+                            rowData[header.replace(/\r/g, "")] = data[index].replace(/\r/g, "");
+                        });
+                        return rowData;
+                    });
+
+                    const latestData = cityData[city][cityData[city].length - 1];
+                    const card = createCityCard(latestData);
+                    citiesGrid.appendChild(card);
+                }
+            } catch (error) {
+                console.error(`Lỗi khi tải dữ liệu cho ${city}:`, error);
+            }
+        }
+
+        if (Object.keys(cityData).length > 0) {
+            updateStatistics(cityData);
+            createChart(cityData);
+            createBarChart(cityData);
+        } else {
+            console.error("Không thể tải dữ liệu từ bất kỳ thành phố nào");
+        }
     } catch (error) {
-      console.error(`Lỗi khi tải dữ liệu cho ${city}:`, error);
+        console.error("Lỗi khi tải dữ liệu:", error);
+    } finally {
+        hideLoading();
     }
-  }
-
-  if (Object.keys(cityData).length > 0) {
-    updateStatistics(cityData);
-    createChart(cityData);
-    createBarChart(cityData);
-  } else {
-    console.error("Không thể tải dữ liệu từ bất kỳ thành phố nào");
-  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
