@@ -323,6 +323,7 @@ function createChart(cityData) {
           type: "time",
           time: {
             unit: "hour",
+            stepSize: 6,
             displayFormats: {
               hour: 'HH:mm',
               day: 'dd/MM'
@@ -336,25 +337,51 @@ function createChart(cityData) {
             drawTicks: true
           },
           ticks: {
+            source: 'auto',
             maxRotation: 0,
-            autoSkip: true,
-            maxTicksLimit: 12,
+            autoSkip: false,
+            major: {
+              enabled: true,
+              stepSize: 6
+            },
             font: {
               family: "'Google Sans', sans-serif",
               size: 11
             },
-            color: "#5f6368"
-          },
-          title: {
-            display: true,
-            text: "Thời gian",
-            font: {
-              family: "'Google Sans', sans-serif",
-              weight: "bold",
-              size: 13
+            color: function(context) {
+              const date = new Date(context.value);
+              return date.getHours() === 0 ? '#202124' : '#5f6368';
             },
-            color: "#202124",
-            padding: {top: 10, bottom: 10}
+            font: function(context) {
+              const date = new Date(context.value);
+              return {
+                family: "'Google Sans', sans-serif",
+                size: date.getHours() === 0 ? 12 : 11,
+                weight: date.getHours() === 0 ? 'bold' : 'normal'
+              };
+            },
+            callback: function(value, index, values) {
+              const date = new Date(value);
+              const hours = date.getHours();
+              
+              // Hiển thị ngày mới khi là 00:00
+              if (hours === 0) {
+                return date.toLocaleDateString('vi-VN', { 
+                  day: '2-digit',
+                  month: '2-digit'
+                });
+              }
+              
+              // Hiển thị giờ cho các mốc 6 tiếng
+              if (hours % 6 === 0) {
+                return date.toLocaleTimeString('vi-VN', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                });
+              }
+              
+              return '';  // Ẩn các mốc thời gian khác
+            }
           }
         },
         y: {
