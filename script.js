@@ -22,161 +22,69 @@ function _normalize_text(text) {
     .replace(/\s+/g, "_");
 }
 
-function createBarChart(cityData) {
-  const ctx = document.getElementById("aqiBarChart").getContext("2d");
-  const getColor = getChartColors();
-
-  const cities = Object.keys(cityData);
-  const latestAQIs = cities.map(city => {
-    const latestData = cityData[city][cityData[city].length - 1];
-    return {
-      city: city.replace(/_/g, " "),
-      aqi: parseFloat(latestData.aqi)
-    };
-  }).sort((a, b) => b.aqi - a.aqi);
-
-  const barChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: latestAQIs.map(item => item.city),
-      datasets: [{
-        label: "Chỉ số AQI",
-        data: latestAQIs.map(item => item.aqi),
-        backgroundColor: latestAQIs.map((_, index) => getColor(index)),
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        title: {
-          display: false
-        },
-        legend: {
-          display: false
-        },
-        tooltip: {
-          enabled: true,
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          titleColor: "#202124",
-          bodyColor: "#202124",
-          borderColor: "#ddd",
-          borderWidth: 1,
-          padding: 12,
-          bodyFont: {
-            family: "'Google Sans', sans-serif"
-          },
-          titleFont: {
-            family: "'Google Sans', sans-serif",
-            weight: "bold"
-          },
-          callbacks: {
-            label: function(context) {
-              return `AQI: ${Math.round(context.raw)}`;
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: "Chỉ số AQI",
-            font: {
-              family: "'Google Sans', sans-serif",
-              weight: "bold",
-              size: 13
-            },
-            color: "#202124"
-          },
-          ticks: {
-            font: {
-              family: "'Google Sans', sans-serif",
-              size: 11
-            },
-            color: "#5f6368"
-          }
-        },
-        x: {
-          ticks: {
-            font: {
-              family: "'Google Sans', sans-serif",
-              size: 11
-            },
-            color: "#5f6368",
-            maxRotation: 45,
-            minRotation: 45
-          }
-        }
-      }
-    }
-  });
-
-  return barChart;
-}
 
 function showLoading() {
-    document.getElementById('loading').classList.add('active');
+  document.getElementById("loading").classList.add("active");
 }
 
 function hideLoading() {
-    document.getElementById('loading').classList.remove('active');
+  document.getElementById("loading").classList.remove("active");
 }
 
 async function loadCityData() {
-    showLoading();
-    try {
-        const citiesGrid = document.getElementById("citiesGrid");
-        citiesGrid.innerHTML = "";
+  showLoading();
+  try {
+    const citiesGrid = document.getElementById("citiesGrid");
+    citiesGrid.innerHTML = "";
 
-        const cities = await getCities();
-        const cityData = {};
+    const cities = await getCities();
+    const cityData = {};
 
-        const selectedYear = document.getElementById("yearSelect").value;
-        const selectedMonth = document.getElementById("monthSelect").value;
+    const selectedYear = document.getElementById("yearSelect").value;
+    const selectedMonth = document.getElementById("monthSelect").value;
 
-        for (const city of cities) {
-            try {
-                const response = await fetch(
-                    `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
-                );
-                const csvText = await response.text();
-                const rows = csvText.split("\n").filter((row) => row.trim());
+    for (const city of cities) {
+      try {
+        const response = await fetch(
+          `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
+        );
+        const csvText = await response.text();
+        const rows = csvText.split("\n").filter((row) => row.trim());
 
-                if (rows.length >= 2) {
-                    const headers = rows[0].split(",");
-                    cityData[city] = rows.slice(1).map((row) => {
-                        const data = row.split(",");
-                        const rowData = {};
-                        headers.forEach((header, index) => {
-                            rowData[header.replace(/\r/g, "")] = data[index].replace(/\r/g, "");
-                        });
-                        return rowData;
-                    });
+        if (rows.length >= 2) {
+          const headers = rows[0].split(",");
+          cityData[city] = rows.slice(1).map((row) => {
+            const data = row.split(",");
+            const rowData = {};
+            headers.forEach((header, index) => {
+              rowData[header.replace(/\r/g, "")] = data[index].replace(
+                /\r/g,
+                ""
+              );
+            });
+            return rowData;
+          });
 
-                    const latestData = cityData[city][cityData[city].length - 1];
-                    const card = createCityCard(latestData);
-                    citiesGrid.appendChild(card);
-                }
-            } catch (error) {
-                console.error(`Lỗi khi tải dữ liệu cho ${city}:`, error);
-            }
+          const latestData = cityData[city][cityData[city].length - 1];
+          const card = createCityCard(latestData);
+          citiesGrid.appendChild(card);
         }
-
-        if (Object.keys(cityData).length > 0) {
-            updateStatistics(cityData);
-            createChart(cityData);
-            createBarChart(cityData);
-        } else {
-            console.error("Không thể tải dữ liệu từ bất kỳ thành phố nào");
-        }
-    } catch (error) {
-        console.error("Lỗi khi tải dữ liệu:", error);
-    } finally {
-        hideLoading();
+      } catch (error) {
+        console.error(`Lỗi khi tải dữ liệu cho ${city}:`, error);
+      }
     }
+
+    if (Object.keys(cityData).length > 0) {
+      updateStatistics(cityData);
+      createChart(cityData);
+    } else {
+      console.error("Không thể tải dữ liệu từ bất kỳ thành phố nào");
+    }
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu:", error);
+  } finally {
+    hideLoading();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -231,7 +139,6 @@ function updateStatistics(cityData) {
 function createChart(cityData) {
   const ctx = document.getElementById("aqiChart").getContext("2d");
   const selectedYear = document.getElementById("yearSelect").value;
-  //   const selectedMonth = document.getElementById("monthSelect").value;
   const getColor = getChartColors();
 
   const datasets = Object.entries(cityData).map(([city, data], index) => {
@@ -281,8 +188,8 @@ function createChart(cityData) {
             family: "'Google Sans', sans-serif",
           },
           padding: {
-            top: 20,
-            bottom: 20,
+            top: 0,
+            bottom: 10,
           },
           color: "#202124",
         },
@@ -325,8 +232,8 @@ function createChart(cityData) {
             unit: "hour",
             stepSize: 6,
             displayFormats: {
-              hour: 'HH:mm',
-              day: 'dd/MM'
+              hour: "HH:mm",
+              day: "dd/MM",
             },
             tooltipFormat: "dd/MM/yyyy HH:mm",
           },
@@ -334,55 +241,54 @@ function createChart(cityData) {
             display: true,
             color: "#f1f3f4",
             drawBorder: true,
-            drawTicks: true
+            drawTicks: true,
           },
           ticks: {
-            source: 'auto',
+            source: "auto",
             maxRotation: 0,
             autoSkip: false,
+            padding: 10,
             major: {
               enabled: true,
-              stepSize: 6
+              stepSize: 6,
             },
             font: {
               family: "'Google Sans', sans-serif",
-              size: 11
+              size: 11,
             },
-            color: function(context) {
+            color: function (context) {
               const date = new Date(context.value);
-              return date.getHours() === 0 ? '#202124' : '#5f6368';
+              return date.getHours() === 0 ? "#202124" : "#5f6368";
             },
-            font: function(context) {
+            font: function (context) {
               const date = new Date(context.value);
               return {
                 family: "'Google Sans', sans-serif",
                 size: date.getHours() === 0 ? 12 : 11,
-                weight: date.getHours() === 0 ? 'bold' : 'normal'
+                weight: date.getHours() === 0 ? "bold" : "normal",
               };
             },
-            callback: function(value, index, values) {
+            callback: function (value, index, values) {
               const date = new Date(value);
               const hours = date.getHours();
-              
-              // Hiển thị ngày mới khi là 00:00
+
               if (hours === 0) {
-                return date.toLocaleDateString('vi-VN', { 
-                  day: '2-digit',
-                  month: '2-digit'
+                return date.toLocaleDateString("vi-VN", {
+                  day: "2-digit",
+                  month: "2-digit",
                 });
               }
-              
-              // Hiển thị giờ cho các mốc 6 tiếng
+
               if (hours % 6 === 0) {
-                return date.toLocaleTimeString('vi-VN', {
-                  hour: '2-digit',
-                  minute: '2-digit'
+                return date.toLocaleTimeString("vi-VN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
                 });
               }
-              
-              return '';  // Ẩn các mốc thời gian khác
-            }
-          }
+
+              return "";
+            },
+          },
         },
         y: {
           title: {
@@ -407,23 +313,24 @@ function createChart(cityData) {
             },
             color: "#5f6368",
             stepSize: 25,
-            callback: function(value) {
-              return value + ' AQI';
-            }
+            callback: function (value) {
+              return value;
+            },
           },
           min: 0,
-          suggestedMax: 200
-        }
+          suggestedMax: 200,
+        },
       },
       layout: {
         padding: {
-          left: 10,
-          right: 30,
-          top: 20,
-          bottom: 10
-        }
-      }
-    }
+          left: 15,
+          right: 35,
+          top: 25,
+          bottom: 15,
+        },
+      },
+      aspectRatio: 1, 
+    },
   });
 }
 
@@ -432,7 +339,7 @@ function getChartColors() {
     // Màu chính của Google
     "#1a73e8", // Xanh dương Google
     "#ea4335", // Đỏ Google
-    "#34a853", // Xanh lá Google 
+    "#34a853", // Xanh lá Google
     "#fbbc04", // Vàng Google
 
     // Màu Material Design cơ bản
@@ -487,7 +394,7 @@ function getChartColors() {
     "#ef6c00", // Orange 800
     "#d84315", // Deep Orange 800
     "#4e342e", // Brown 800
-    "#37474f"  // Blue Grey 800
+    "#37474f", // Blue Grey 800
   ];
 
   return function (index) {
@@ -496,48 +403,54 @@ function getChartColors() {
 }
 
 function getAQIClass(aqi) {
-  const aqiNum = parseInt(aqi);
-  if (aqiNum <= 50) return "good";
-  if (aqiNum <= 100) return "moderate";
-  if (aqiNum <= 150) return "unhealthy";
+  const aqiValue = parseFloat(aqi);
+  if (aqiValue <= 50) return "good";
+  if (aqiValue <= 100) return "moderate";
+  if (aqiValue <= 150) return "unhealthy";
   return "very-unhealthy";
 }
 
 function createCityCard(cityData) {
   const div = document.createElement("div");
-  div.className = "city-card";
+  div.className = `city-card ${getAQIClass(cityData.aqi)}`;
 
   const timestamp = new Date(cityData.timestamp);
   const formattedTime = timestamp.toLocaleString("vi-VN");
 
   div.innerHTML = `
-        <div class="city-name">${cityData.city.replace(/_/g, " ")}</div>
-        <div class="aqi-value ${getAQIClass(cityData.aqi)}">
-            ${Math.round(cityData.aqi)}
+    <div class="city-card-header">
+        <div class="header-left">
+            <div class="aqi-value ${getAQIClass(cityData.aqi)}">${Math.round(
+    cityData.aqi
+  )}</div>
+            <div class="city-name">${cityData.city.replace(/_/g, " ")}</div>
         </div>
-        <div class="aqi-info">
-            <div class="info-item">
-                <strong>Gió</strong>
-                ${cityData.wind_speed} km/h
-            </div>
-            <div class="info-item">
-                <strong>Độ ẩm</strong>
-                ${cityData.humidity}%
-            </div>
-            <div class="info-item">
-                <strong>ô nhiễm Chính</strong>
-                ${cityData.pollutant}
-            </div>
-            <div class="info-item">
-                <strong>Nồng độ</strong>
-                ${cityData.concentration}
-                µg/m³
-            </div>
-        </div>
-        <div style="text-align: right; font-size: 0.8em; margin-top: 15px; color: #666;">
-            Cập nhật: ${formattedTime}
-        </div>
-    `;
+    </div>
+    
+<div class="city-card-content">
+  <div class="info-item pollutant">
+    <i class="fas fa-head-side-mask"></i>
+    <span>${cityData.pollutant}</span>
+  </div>
+  <div class="info-item wind">
+    <i class="fas fa-wind"></i>
+    <span>${cityData.wind_speed} km/h</span>
+  </div>
+  <div class="info-item humidity">
+    <i class="fas fa-tint"></i>
+    <span>${cityData.humidity}%</span>
+  </div>
+  <div class="info-item concentration">
+    <i class="fas fa-flask"></i>
+    <span>${cityData.concentration} µg/m³</span>
+  </div>
+</div>
+
+
+    <div class="update-time">
+        Cập nhật: ${formattedTime}
+    </div>
+  `;
 
   return div;
 }
