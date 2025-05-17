@@ -8,10 +8,23 @@ cities:
     site_path: hanoi/hanoi
   - name: "Hồ Chí Minh"
     site_path: ho-chi-minh-city/ho-chi-minh-city
+  - name: "Hưng Yên"
+    site_path: tinh-hung-yen/hung-yen
+  - name: "Huế"  
+    site_path: tinh-thua-thien-hue/hue
+  - name: "Lai Châu"  
+    site_path: tinh-lai-chau/lai-chau
   - name: "Đà Nẵng"
     site_path: da-nang/da-nang
   - name: "Hải Phòng"
     site_path: thanh-pho-hai-phong/haiphong
   - name: "Nha Trang"
     site_path: khanh-hoa/nha-trang
+  - name: "Hải Dương"
+    site_path: tinh-hai-duong/hai-duong
+  - name: "Hòa Bình"
+    site_path: tinh-hoa-binh/thanh-pho-hoa-binh
+  - name: "Thái Bình"
+    site_path: tinh-thai-binh/thanh-pho-thai-binh
+
 

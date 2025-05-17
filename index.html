@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chất Lượng Không Khí Việt Nam</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   </head>
@@ -16,24 +17,29 @@
         </div>
         <div class="sidebar-content">
           <div class="filter-section">
-            <select id="yearSelect" class="time-filter">
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-            <select id="monthSelect" class="time-filter">
-              <option value="jan">Tháng 1</option>
-              <option value="feb">Tháng 2</option>
-              <option value="mar">Tháng 3</option>
-              <option value="apr">Tháng 4</option>
-              <option value="may">Tháng 5</option>
-              <option value="jun">Tháng 6</option>
-              <option value="jul">Tháng 7</option>
-              <option value="aug">Tháng 8</option>
-              <option value="sep">Tháng 9</option>
-              <option value="oct">Tháng 10</option>
-              <option value="nov">Tháng 11</option>
-              <option value="dec">Tháng 12</option>
-            </select>
+            <div class="select-wrapper">
+              <i class="fas fa-calendar"></i>
+              <select id="yearSelect" class="time-filter">
+                <option value="2025">Năm 2025</option>
+              </select>
+            </div>
+            <div class="select-wrapper">
+              <i class="fas fa-calendar-day"></i>
+              <select id="monthSelect" class="time-filter">
+                <option value="jan">Tháng 1</option>
+                <option value="feb">Tháng 2</option>
+                <option value="mar">Tháng 3</option>
+                <option value="apr">Tháng 4</option>
+                <option value="may">Tháng 5</option>
+                <option value="jun">Tháng 6</option>
+                <option value="jul">Tháng 7</option>
+                <option value="aug">Tháng 8</option>
+                <option value="sep">Tháng 9</option>
+                <option value="oct">Tháng 10</option>
+                <option value="nov">Tháng 11</option>
+                <option value="dec">Tháng 12</option>
+              </select>
+            </div>
           </div>
           <div class="stats-overview">
             <div class="stat-item">
@@ -49,6 +55,57 @@
               <span id="worstCity" class="stat-value">--</span>
             </div>
           </div>
+          <div class="aqi-legend">
+            <h3>Chỉ số chất lượng không khí (AQI)</h3>
+            <div class="legend-item">
+              <div class="color-box good"></div>
+              <div class="legend-text">
+                <span class="range">0-50</span>
+                <span class="desc">Tốt</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="color-box moderate"></div>
+              <div class="legend-text">
+                <span class="range">51-100</span>
+                <span class="desc">Trung bình</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="color-box unhealthy"></div>
+              <div class="legend-text">
+                <span class="range">101-150</span>
+                <span class="desc">Không lành mạnh cho nhóm nhạy cảm</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="color-box very-unhealthy"></div>
+              <div class="legend-text">
+                <span class="range">>150</span>
+                <span class="desc">Không lành mạnh</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pollutants-info">
+            <h3>Chất ô nhiễm chính</h3>
+            <div class="pollutant-item">
+              <h4>PM2.5</h4>
+              <p>Bụi mịn có đường kính ≤ 2.5µm, nguy hiểm nhất vì có thể xâm nhập sâu vào phổi</p>
+            </div>
+            <div class="pollutant-item">
+              <h4>PM10</h4>
+              <p>Bụi có đường kính ≤ 10µm, có thể gây kích ứng đường hô hấp</p>
+            </div>
+            <div class="pollutant-item">
+              <h4>O3</h4>
+              <p>Ozone mặt đất, có thể gây viêm phổi và các vấn đề hô hấp</p>
+            </div>
+            <div class="pollutant-item">
+              <h4>NO2</h4>
+              <p>Nitrogen dioxide, gây kích ứng phổi</p>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -56,8 +113,9 @@
         <div class="chart-section">
           <canvas id="aqiChart"></canvas>
         </div>
-        <div class="cities-grid" id="citiesGrid">
-          <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+        <div class="cities-grid-container">
+          <div class="cities-grid" id="citiesGrid">
+          </div>
         </div>
       </main>
     </div>
