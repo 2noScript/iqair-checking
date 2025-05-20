@@ -549,11 +549,149 @@
   }
 }
 
-/* .city-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-} */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .chart-section {
+    height: auto;
+    min-height: 250px;
+    max-height: 400px;
+    margin: 0 -16px;
+    padding: 12px;
+    border-radius: 0;
+    background: var(--card-background);
+    box-shadow: none;
+    position: relative;
+  }
+
+  .chart-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  canvas#aqiChart {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 350px;
+  }
+
+  .cities-grid-container {
+    margin-top: 0;
+    padding: 16px;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .cities-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+  }
+
+  .city-card {
+    margin: 0;
+    border-radius: 12px;
+    background: var(--card-background);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .city-card-header {
+    padding: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .header-left {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .aqi-value {
+    font-size: 1.5em;
+    padding: 8px 12px;
+    margin: 0;
+    min-width: 45px;
+    text-align: center;
+  }
+
+  .city-name {
+    font-size: 1.1em;
+    margin: 0;
+  }
+
+  .city-card-content {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .info-item {
+    padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+  }
+
+  .info-item i {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .update-time {
+    padding: 8px 12px;
+    font-size: 0.8em;
+    color: #666;
+    text-align: right;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Thêm styles cho màn hình siêu nhỏ */
+@media (max-width: 375px) {
+  .chart-section {
+    min-height: 200px;
+  }
+
+  canvas#aqiChart {
+    max-height: 250px;
+  }
+
+  .city-card-content {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item {
+    justify-content: space-between;
+  }
+}
 
 .info-item {
   display: flex;

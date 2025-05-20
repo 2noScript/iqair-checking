@@ -43,7 +43,7 @@ async function loadCityData() {
     const selectedYear = document.getElementById("yearSelect").value;
     const selectedMonth = document.getElementById("monthSelect").value;
 
-    for (const city of cities) {
+    const cityDataPromises = cities.map(async (city) => {
       try {
         const response = await fetch(
           `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
@@ -53,26 +53,37 @@ async function loadCityData() {
 
         if (rows.length >= 2) {
           const headers = rows[0].split(",");
-          cityData[city] = rows.slice(1).map((row) => {
+          const data = rows.slice(1).map((row) => {
             const data = row.split(",");
             const rowData = {};
             headers.forEach((header, index) => {
-              rowData[header.replace(/\r/g, "")] = data[index].replace(
-                /\r/g,
-                ""
-              );
+              rowData[header.replace(/\r/g, "")] = data[index].replace(/\r/g, "");
             });
             return rowData;
           });
-
-          const latestData = cityData[city][cityData[city].length - 1];
-          const card = createCityCard(latestData);
-          citiesGrid.appendChild(card);
+          return { city, data };
         }
+        return null;
       } catch (error) {
         console.error(`Lỗi khi tải dữ liệu cho ${city}:`, error);
+        return null;
       }
-    }
+    });
+
+    // Đợi tất cả các promise hoàn thành
+    const results = await Promise.all(cityDataPromises);
+
+    // Xử lý kết quả và tạo cityData object
+    const cardsHTML = [];
+    results.forEach((result) => {
+      if (result && result.data) {
+        cityData[result.city] = result.data;
+        const latestData = result.data[result.data.length - 1];
+        cardsHTML.push(createCityCard(latestData).outerHTML);
+      }
+    });
+
+    citiesGrid.innerHTML = cardsHTML.join('');
 
     if (Object.keys(cityData).length > 0) {
       updateStatistics(cityData);
