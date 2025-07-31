@@ -1,3 +1,4 @@
 timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
 2025-08-01T00:18:19.724563+07:00,Lai Châu,58,1.1,99,pm25,13
 2025-08-01T01:26:54.025576+07:00,Lai Châu,58,0.3,99,pm25,13
+2025-08-01T02:17:14.689258+07:00,Lai Châu,57,2.8,100,pm25,12.2
