@@ -1,0 +1,2 @@
+timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
+2025-11-01T00:15:31.702292+07:00,Huế,55,5.5,100,pm25,11.2
