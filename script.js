@@ -7,6 +7,7 @@ async function getCities() {
     const yamlText = await response.text();
     const config = jsyaml.load(yamlText);
     return config.cities.map((city) => _normalize_text(city.name));
+
   } catch (error) {
     console.error("Lỗi khi lấy danh sách thành phố:", error);
     return [];
@@ -48,6 +49,7 @@ async function loadCityData() {
         const response = await fetch(
           `data/${city}/aqi_${city}_${selectedYear}_${selectedMonth}.csv`
         );
+        if(response.status==404) return null
         const csvText = await response.text();
         const rows = csvText.split("\n").filter((row) => row.trim());
 
@@ -76,7 +78,7 @@ async function loadCityData() {
     // Xử lý kết quả và tạo cityData object
     const cardsHTML = [];
     results.forEach((result) => {
-      if (result && result.data) {
+      if (result && result?.data) {
         cityData[result.city] = result.data;
         const latestData = result.data[result.data.length - 1];
         cardsHTML.push(createCityCard(latestData).outerHTML);
