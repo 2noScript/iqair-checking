@@ -26,5 +26,7 @@ cities:
     site_path: tinh-hoa-binh/thanh-pho-hoa-binh
   - name: "Thái Bình"
     site_path: tinh-thai-binh/thanh-pho-thai-binh
+  - name: "Bắc Ninh"
+    site_path: tinh-bac-ninh/bac-ninh
 
 
