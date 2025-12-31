@@ -679,3 +679,4 @@ timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
 2025-12-31T20:30:29.284062+07:00,Nha Trang,56,11.4,70,pm25,11.8
 2025-12-31T21:17:49.305488+07:00,Nha Trang,56,10.9,71,pm25,11.8
 2025-12-31T22:18:01.633861+07:00,Nha Trang,56,9.1,70,pm25,11.8
+2025-12-31T23:22:29.284065+07:00,Nha Trang,58,8.5,79,pm25,13
