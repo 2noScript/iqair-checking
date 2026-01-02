@@ -36,3 +36,4 @@ timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
 2026-01-02T14:21:53.253475+07:00,Nha Trang,58,25.4,67,pm25,12.7
 2026-01-02T15:25:40.874959+07:00,Nha Trang,58,26.7,66,pm25,12.7
 2026-01-02T16:21:36.089681+07:00,Nha Trang,58,26.7,68,pm25,12.7
+2026-01-02T17:18:43.517059+07:00,Nha Trang,58,22.8,67,pm25,13
