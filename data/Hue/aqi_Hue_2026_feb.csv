@@ -1,2 +1,3 @@
 timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
 2026-02-01T00:20:41.380519+07:00,Huế,60,7.4,83,so2,114
+2026-02-01T01:27:23.883225+07:00,Huế,60,5.5,83,so2,114.1
