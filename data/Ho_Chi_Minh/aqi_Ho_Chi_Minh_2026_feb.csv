@@ -409,3 +409,4 @@ timestamp,city,aqi,wind_speed,humidity,pollutant,concentration
 2026-02-22T01:30:27.975477+07:00,Hồ Chí Minh,58,2,83,pm25,13
 2026-02-22T02:21:30.554185+07:00,Hồ Chí Minh,56,2,83,pm25,12
 2026-02-22T03:20:55.141561+07:00,Hồ Chí Minh,56,0,83,pm25,12
+2026-02-22T04:20:11.332717+07:00,Hồ Chí Minh,58,0,89,pm25,13
